@@ -105,7 +105,7 @@ pro idl_wrapper
 ;          ss1d.lambda = float(lambda) ;replace, reconvert from double
 
 
-debug=0
+debug=1
 npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
 trim=0
 wvmin=500 ; Trim all input data to these wavelengths
