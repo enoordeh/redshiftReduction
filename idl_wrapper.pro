@@ -106,6 +106,7 @@ pro idl_wrapper
 
 
 debug=0
+; nosubtract = 1
 npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
 trim=0
 wvmin=500 ; Trim all input data to these wavelengths
