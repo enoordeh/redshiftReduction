@@ -105,7 +105,8 @@ pro idl_wrapper
 ;          ss1d.lambda = float(lambda) ;replace, reconvert from double
 
 
-debug=1
+debug=0
+nosubtract = 1
 npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
 trim=0
 wvmin=500 ; Trim all input data to these wavelengths
@@ -138,7 +139,7 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 
 ; output database name
 
-; PC Test Data Set
+; PC Test Data Set 
 ; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb.csv' ; Best fit results
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
@@ -275,16 +276,16 @@ plot, ss1d.lambda, ss1d.spec
 ; first set the parameters for call to zfind.
 
 ; SDSS Test 2012
-      ; eigenfile_gal='spEigenGal-55740.fits'
-      ; eigenfile_CV = 'spEigenCVstar-55734.fits'
-      ; eigenfile_star = 'spEigenStar-55734.fits'
-      ; eigenfile_qso = 'spEigenQSO-55732.fits'
+      eigenfile_gal='spEigenGal-55740.fits'
+      eigenfile_CV = 'spEigenCVstar-55734.fits'
+      eigenfile_star = 'spEigenStar-55734.fits'
+      eigenfile_qso = 'spEigenQSO-55732.fits'
 
 ; SDSS Test 2008
-      eigenfile_gal='spEigenGal-53724.fits'
-      eigenfile_CV = 'spEigenCVstar-55734.fits'
-      eigenfile_star = 'spEigenStar-55734.fits' ; Should be spEigenStar-54474.fits but we don't have it. Doesn't make a big difference. Only 5 stars in dataset.
-      eigenfile_qso = 'spEigenQSO-53724.fits'
+      ; eigenfile_gal='spEigenGal-53724.fits'
+      ; eigenfile_CV = 'spEigenCVstar-55734.fits'
+      ; eigenfile_star = 'spEigenStar-55734.fits' ; Should be spEigenStar-54474.fits but we don't have it. Doesn't make a big difference. Only 5 stars in dataset.
+      ; eigenfile_qso = 'spEigenQSO-53724.fits'
 
 ; Big BOSS
 		  ; eigenfile_gal='spEigenGal-51838.fits'
@@ -314,7 +315,7 @@ fname='debug/zfind.dat' ; Debug file name
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
                          debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname)
+                         loglam=loglam, columns=columns, fname=fname, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -380,7 +381,7 @@ resulti_CV = zfind_CV(ss1d, /linear_lambda, eigenfile=eigenfile_CV, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
                          debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname)
+                         loglam=loglam, columns=columns, fname=fname, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -504,7 +505,7 @@ print, "************************************************************************
                       zmax = zmax, pspace = pspace, loglam = loglam, $
                       nfind = nfind, width = 5*pspace, objflux = objflux, $
                       objivar=objivar, plottitle = plottitle, $
-                       doplot = doplot, debug = debug)
+                       doplot = doplot, debug = debug, nosubtract=nosubtract)
 
 
           ; splog, 'CPU time to compute QSO redshifts = ', systime(1)-t0

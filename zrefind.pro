@@ -123,7 +123,7 @@ function zrefind, ss1d, objflux, objivar, hdr=hdr, loglam=loglam, $
           eigenfile=result[i0].tfile, columns=result[i0].tcolumn[0:ncol-1], $
           npoly=result[i0].npoly, zguess=result[indx[jj]].z, loglam=loglam, $
           pwidth=pwidth, pspace=pspace, nfind=1, width=width, $
-           doplot=doplot*(jj eq 0), /nosubtract, fname=fname, _EXTRA=EXTRA) else $ 
+           doplot=doplot*(jj eq 0), /nosubtract, fname=fname, _EXTRA=EXTRA) else $ ; /nosubtract means nosubtract=1
 ;slightly different version of zfind for qso spectra
 ;
          res1 = zfind_qso(ss1d, hdr=hdr,objflux=objflux, objivar=objivar, $
