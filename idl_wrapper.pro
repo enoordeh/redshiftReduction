@@ -146,7 +146,9 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
 out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-
+z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
+tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -184,7 +186,11 @@ star_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, 
 CV_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 qso_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 a_struct = replicate({npoly:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
-result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:''}, n_spec)
+result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:'', tfile:''}, n_spec)
+class_struct = replicate({c1:'', c2:'', c3:'', c4:'', c5:'', c6:'', c7:'', c8:''}, n_spec) ; Store top 8 classes
+z_struct = replicate({z1:0.0, z2:0.0, z3:0.0, z4:0.0, z5:0.0, z6:0.0, z7:0.0, z8:0.0}, n_spec) ; Store top 8 redshifts
+tfile_struct = replicate({t1:'', t2:'', t3:'', t4:'', t5:'', t6:'', t7:'', t8:''}, n_spec) ; Store eigentemplates of top 8 fits
+
 
 for ii=0, ncols-1 do begin
 ; ii=444
@@ -640,14 +646,16 @@ print, "result.theta", result.theta
 ; star_struct[ii].type='STAR' ; or maybe you want name of eigentemplate or something?
 
 ; Just save best fit result after sorting gal, star, qso by chi^2
-print, 'result[0].z', result[0].z
-print, 'result[0].theta', result[0].theta
+print, 'result[0].z: ', result[0].z
+print, 'result[0].theta: ', result[0].theta
+print, 'result[0].tfile: ', result[0].tfile
 print, 'npolyall=', npolyall
 result_struct[ii].z=result[0].z ; here just tag the results that are returned to us in the result structures
 result_struct[ii].rchi2=result[0].rchi2
 result_struct[ii].dof=result[0].dof
 result_struct[ii].z_err=result[0].z_err
 result_struct[ii].class=result[0].class ; or maybe you want name of eigentemplate or something?
+result_struct[ii].tfile = result[0].tfile
 
 ; Also save the top 2 rchi^2 and respective redshifts for each class
 gal_struct[ii].z_1 = res_gal_sorted[0].z
@@ -672,13 +680,40 @@ CV_struct[ii].rchi2_2 = res_CV_sorted[1].rchi2
 
 a_struct[ii].npoly = npolyall
 a_struct[ii].a1 = result[0].theta[0]
-a_struct[ii].a2 = result[1].theta[1]
-a_struct[ii].a3 = result[2].theta[2]
-a_struct[ii].a4 = result[3].theta[3]
-a_struct[ii].a5 = result[4].theta[4]
-a_struct[ii].a6 = result[5].theta[5]
-a_struct[ii].a7 = result[6].theta[6]
-a_struct[ii].a8 = result[7].theta[7]
+a_struct[ii].a2 = result[0].theta[1]
+a_struct[ii].a3 = result[0].theta[2]
+a_struct[ii].a4 = result[0].theta[3]
+a_struct[ii].a5 = result[0].theta[4]
+a_struct[ii].a6 = result[0].theta[5]
+a_struct[ii].a7 = result[0].theta[6]
+a_struct[ii].a8 = result[0].theta[7]
+
+class_struct[ii].c1 = result[0].class
+class_struct[ii].c2 = result[1].class
+class_struct[ii].c3 = result[2].class
+class_struct[ii].c4 = result[3].class
+class_struct[ii].c5 = result[4].class
+class_struct[ii].c6 = result[5].class
+class_struct[ii].c7 = result[6].class
+class_struct[ii].c8 = result[7].class
+
+z_struct[ii].z1 = result[0].z
+z_struct[ii].z2 = result[1].z
+z_struct[ii].z3 = result[2].z
+z_struct[ii].z4 = result[3].z
+z_struct[ii].z5 = result[4].z
+z_struct[ii].z6 = result[5].z
+z_struct[ii].z7 = result[6].z
+z_struct[ii].z8 = result[7].z
+
+tfile_struct[ii].t1 = result[0].tfile
+tfile_struct[ii].t2 = result[1].tfile
+tfile_struct[ii].t3 = result[2].tfile
+tfile_struct[ii].t4 = result[3].tfile
+tfile_struct[ii].t5 = result[4].tfile
+tfile_struct[ii].t6 = result[5].tfile
+tfile_struct[ii].t7 = result[6].tfile
+tfile_struct[ii].t8 = result[7].tfile
 
 endfor
 ; print, "result_struct.z", result_struct.z
@@ -706,7 +741,9 @@ WRITE_CSV, out_db, result_struct
 ; WRITE_CSV, out_db, result_struct.z, result_struct.rchi2, result_struct.dof, result_struct.z_err, result_struct.class
 WRITE_CSV, out_db2, gal_struct.rchi2_1, gal_struct.rchi2_2, star_struct.rchi2_1, star_struct.rchi2_2, qso_struct.rchi2_1, qso_struct.rchi2_2, CV_struct.rchi2_1, CV_struct.rchi2_2
 WRITE_CSV, a_out, a_struct
-
+WRITE_CSV, z_out, z_struct
+WRITE_CSV, class_out, class_struct
+WRITE_CSV, tfile_out, tfile_struct
 end
 
 
