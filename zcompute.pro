@@ -295,14 +295,15 @@ pause
 
 ; print, "***********MINCHI2/DOF***********:", min(chi2arr/dofarr)
 ; print, debugarr
-;   print, "nlag"
-;   print, nlag
+  print, "nlag"
+  print, nlag
 endif
 
    if nlag gt 1000 then begin ;remove long range trends
       medchi2 = median(chi2arr)
       diffchi2arr =  djs_median(chi2arr,  width= 200,  boundary='reflect')
       chi2arr = chi2arr-diffchi2arr + medchi2 ;redefine chisqr array
+      print, "chi2arr smoothed - long trends removed"
    endif
 
 if (keyword_set(doplot)) then begin

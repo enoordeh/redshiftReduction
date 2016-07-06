@@ -118,23 +118,15 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 ; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/eigentest/objivar.csv'
 ; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/eigentest/wavelengths.csv'
 
-; PC Test Data Set
-; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/objflux.csv'
-; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/objivar.csv'
-; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/wavelengths.csv'
-
 ; SDSS Test Data Set
 spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
 ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
 wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
 
-; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
-; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
-; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
-
-; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/AGNobjflux.csv'
-; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/AGNobjivar.csv'
-; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/AGNwavelengths.csv'
+; Single SDSS Test spectrum that was poorly reduced
+; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_wavelengths.csv'
 
 
 ; output database name
@@ -144,14 +136,17 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
 ; SDSS Test Data set
-out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
-out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-
 ; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
-; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/AGNoutdb.csv'
-; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/AGNoutdb2.csv'
+; Single SDSS Test spectrum that was poorly reduced
+; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
+; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+
+out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
+out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -188,9 +183,8 @@ gal_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n
 star_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 CV_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 qso_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
+a_struct = replicate({npoly:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
 result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:''}, n_spec)
-
-
 
 for ii=0, ncols-1 do begin
 ; ii=444
@@ -276,16 +270,18 @@ plot, ss1d.lambda, ss1d.spec
 ; first set the parameters for call to zfind.
 
 ; SDSS Test 2012
-      ; eigenfile_gal='spEigenGal-55740.fits'
-      ; eigenfile_CV = 'spEigenCVstar-55734.fits'
-      ; eigenfile_star = 'spEigenStar-55734.fits'
-      ; eigenfile_qso = 'spEigenQSO-55732.fits'
+      eigenfile_gal='spEigenGal-55740.fits'
+      eigenfile_CV = 'spEigenCVstar-55734.fits'
+      eigenfile_star = 'spEigenStar-55734.fits'
+      eigenfile_qso = 'spEigenQSO-55732.fits'
+
+; print, "********", eigenfile_gal
 
 ; SDSS Test 2008
-      eigenfile_gal='spEigenGal-53724.fits'
-      eigenfile_CV = 'spEigenCVstar-55734.fits'
-      eigenfile_star = 'spEigenStar-55734.fits' ; Should be spEigenStar-54474.fits but we don't have it. Doesn't make a big difference. Only 5 stars in dataset.
-      eigenfile_qso = 'spEigenQSO-53724.fits'
+      ; eigenfile_gal='spEigenGal-53724.fits'
+      ; eigenfile_CV = 'spEigenCVstar-55734.fits'
+      ; eigenfile_star = 'spEigenStar-55734.fits' ; Should be spEigenStar-54474.fits but we don't have it. Doesn't make a big difference. Only 5 stars in dataset.
+      ; eigenfile_qso = 'spEigenQSO-53724.fits'
 
 ; Big BOSS
 		  ; eigenfile_gal='spEigenGal-51838.fits'
@@ -621,6 +617,7 @@ print, "result.rchi2", result.rchi2
 print, "result.dof", result.dof
 print, "result.z_err", result.z_err
 print, "result.class", result.class
+print, "result.theta", result.theta
 
 ; Save everything -- This needs to be modified to have many more columns to hold above results
 ; gal_struct[ii].zf_z=result.z ; here just tag the results that are returned to us in the result structures
@@ -644,6 +641,8 @@ print, "result.class", result.class
 
 ; Just save best fit result after sorting gal, star, qso by chi^2
 print, 'result[0].z', result[0].z
+print, 'result[0].theta', result[0].theta
+print, 'npolyall=', npolyall
 result_struct[ii].z=result[0].z ; here just tag the results that are returned to us in the result structures
 result_struct[ii].rchi2=result[0].rchi2
 result_struct[ii].dof=result[0].dof
@@ -671,6 +670,16 @@ CV_struct[ii].rchi2_1 = res_CV_sorted[0].rchi2
 CV_struct[ii].z_2 = res_CV_sorted[1].z
 CV_struct[ii].rchi2_2 = res_CV_sorted[1].rchi2
 
+a_struct[ii].npoly = npolyall
+a_struct[ii].a1 = result[0].theta[0]
+a_struct[ii].a2 = result[1].theta[1]
+a_struct[ii].a3 = result[2].theta[2]
+a_struct[ii].a4 = result[3].theta[3]
+a_struct[ii].a5 = result[4].theta[4]
+a_struct[ii].a6 = result[5].theta[5]
+a_struct[ii].a7 = result[6].theta[6]
+a_struct[ii].a8 = result[7].theta[7]
+
 endfor
 ; print, "result_struct.z", result_struct.z
 ; print, "result_struct.rchi2", result_struct.rchi2
@@ -696,6 +705,7 @@ endfor
 WRITE_CSV, out_db, result_struct
 ; WRITE_CSV, out_db, result_struct.z, result_struct.rchi2, result_struct.dof, result_struct.z_err, result_struct.class
 WRITE_CSV, out_db2, gal_struct.rchi2_1, gal_struct.rchi2_2, star_struct.rchi2_1, star_struct.rchi2_2, qso_struct.rchi2_1, qso_struct.rchi2_2, CV_struct.rchi2_1, CV_struct.rchi2_2
+WRITE_CSV, a_out, a_struct
 
 end
 

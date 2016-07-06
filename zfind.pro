@@ -153,7 +153,8 @@ if (keyword_set(debug)) then begin
   lengthtest=n_elements(starflux[*,0])
   xaxistest=indgen(lengthtest)
   cgplot, xaxistest, starflux[*,0], color=FSC_color('red'), XTicklen=1.0, YTicklen=1.0, AxisColor='white',$
-      YTitle = textoidl('Objflux'), XTitle = 'Arbitrary Units', yrange=[-2e2, 1e4], xrange =[]
+      YTitle = textoidl('Objflux'), XTitle = 'Arbitrary Units'
+      ; , yrange=[-2e2, 1e4], xrange =[]
   pause
 endif
 
@@ -199,7 +200,7 @@ endif
 ; DETERMINE THE WAVELENGTH RANGE FOR THE OBJECT. Force binning to 
 ; match that of template 
   IF KEYWORD_SET(linear_lambda) THEN $
-    loglam = linear2log(ss1d, binsize=stardloglam, flux=objflux, ivar=objivar)
+    loglam = linear2log(ss1d, binsize=stardloglam, flux=objflux, ivar=objivar) ; * Emil - This does a spline interpolation to estimate objflux and objivar arrays over the template binning
   objloglam0 = loglam[0]
   objdloglam = stardloglam; loglam[1] - loglam[0] 
 ;should be same as stardloglam, if code works
