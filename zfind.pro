@@ -102,7 +102,7 @@ function zfind, ss1d, eigenfile=eigenfile, eigendir=eigendir, $
                 zguess=zguess, pwidth=pwidth, nfind=nfind, width=width, $
                 linear_lambda=linear_lambda,objflux=objflux, $
                 objivar=objivar, loglam=loglam, $
-                nosubtract=nosubtract, wvmin=wvmin, wvmax=wvmax, fname=fname, debug=debug, $
+                nosubtract=nosubtract, wvmin=wvmin, wvmax=wvmax, fname=fname, debug=debug, limitz=limitz, $
                 _EXTRA=EXTRA
 
   common com_zfind, starflux, starloglam0, stardloglam, $
@@ -164,7 +164,7 @@ endif
 ;       starparams = svdfit(starloglam, starflux[*, i], starorder, $
 ;          /double,  /legendre,  yfit=starcont)
         if i eq 1 then continue ; skip the emission line template.
-        starcont = djs_median(starflux[*, i], width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+        starcont = djs_median(starflux[*, i], width=500, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
         starflux[*, i] = starflux[*, i] - float(starcont)
 
       endfor
@@ -223,7 +223,7 @@ if (keyword_set(debug)) then begin
 endif
 
   if nosubtract eq 0 then begin
-      objcont = djs_median(objflux, width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+      objcont = djs_median(objflux, width=500, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
       objflux = objflux - float(objcont)
   endif
 
@@ -256,7 +256,11 @@ if (keyword_set(debug)) then begin
   pause
 endif
 
-
+; Reset zmax s.t. spectrum always falls within template bounds
+if (keyword_set(limitz)) then begin
+  zmax = 10^(objloglam0/starloglam0)-1
+  print, 'limit z = true, new zmax = ', zmax
+endif
 
 ;;; CHECK IF THE zmin AND zmax ARGUMENTS WERE PASSED. IF SO, THEN
 ;;; CONVERT THE REDSHIFT VALUES INTO PIXEL VALUES pmin AND pmax.

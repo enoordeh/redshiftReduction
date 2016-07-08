@@ -106,6 +106,7 @@ pro idl_wrapper
 
 
 debug=0
+limitz=0 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 ; nosubtract = 1
 npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
 trim=0
@@ -119,14 +120,14 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 ; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/eigentest/wavelengths.csv'
 
 ; SDSS Test Data Set
-spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
-ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
-wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
+; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
 
 ; Single SDSS Test spectrum that was poorly reduced
-; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
-; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objivar.csv'
-; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_wavelengths.csv'
+spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
+ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objivar.csv'
+wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_wavelengths.csv'
 
 
 ; output database name
@@ -140,15 +141,19 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
 ; Single SDSS Test spectrum that was poorly reduced
-; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
-; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
+out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_classes.csv' ; holds the top 8 classifications
+tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
-out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
-out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
-class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
-tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
+; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+; a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+; z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+; class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
+; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -317,7 +322,7 @@ fname='debug/zfind.dat' ; Debug file name
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
                          debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname)
+                         loglam=loglam, columns=columns, fname=fname, limitz=limitz)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
