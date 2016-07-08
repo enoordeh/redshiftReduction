@@ -258,8 +258,10 @@ endif
 
 ; Reset zmax s.t. spectrum always falls within template bounds
 if (keyword_set(limitz)) then begin
-  zmax = 10^(objloglam0/starloglam0)-1
-  print, 'limit z = true, new zmax = ', zmax
+  zmax_n = 10^(objloglam0-starloglam0)-1
+  print, 'limit z = true, zmax from limitz = ', zmax_n
+  if zmax_n lt zmax then zmax = zmax_n ; only change if new z is smaller than old limit
+  print, 'new zmax = ', zmax
 endif
 
 ;;; CHECK IF THE zmin AND zmax ARGUMENTS WERE PASSED. IF SO, THEN

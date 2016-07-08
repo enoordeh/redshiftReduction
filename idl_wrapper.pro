@@ -106,7 +106,7 @@ pro idl_wrapper
 
 
 debug=0
-limitz=0 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
+limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 ; nosubtract = 1
 npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
 trim=0
@@ -302,6 +302,7 @@ plot, ss1d.lambda, ss1d.spec
 		  eigendir='/scratch/bcanning/VIMOS_AGN/sdss12_templates/software/idlspec2d-v5_8_0/templates/'
           zmin = -0.0001
           zmax = max(ss1d.lambda)/3727. -1.  ;allows for variable end
+          ; zmax = 12
           pspace = 5            ; was 1
           width = 5*pspace
           nfind = 5
