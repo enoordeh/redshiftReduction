@@ -164,7 +164,7 @@ endif
 ;       starparams = svdfit(starloglam, starflux[*, i], starorder, $
 ;          /double,  /legendre,  yfit=starcont)
         if i eq 1 then continue ; skip the emission line template.
-        starcont = djs_median(starflux[*, i], width=500, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+        starcont = djs_median(starflux[*, i], width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
         starflux[*, i] = starflux[*, i] - float(starcont)
 
       endfor
@@ -223,7 +223,7 @@ if (keyword_set(debug)) then begin
 endif
 
   if nosubtract eq 0 then begin
-      objcont = djs_median(objflux, width=500, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+      objcont = djs_median(objflux, width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
       objflux = objflux - float(objcont)
   endif
 
