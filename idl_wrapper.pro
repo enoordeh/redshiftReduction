@@ -106,9 +106,10 @@ pro idl_wrapper
 
 
 debug=0
+physcheck=0 ; Check if linear combos are 'physical'?
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 ; nosubtract = 1
-npolyall = 3 ; Add an (npolyall)th order polynomial to the template fitting procedure
+npolyall = 3 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
 trim=0
 wvmin=500 ; Trim all input data to these wavelengths
 wvmax=9000
@@ -120,14 +121,14 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 ; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/eigentest/wavelengths.csv'
 
 ; SDSS Test Data Set
-; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
-; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
-; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
+spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
+ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
+wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
 
 ; Single SDSS Test spectrum that was poorly reduced
-spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
-ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objivar.csv'
-wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_wavelengths.csv'
+; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_wavelengths.csv'
 
 
 ; output database name
@@ -136,24 +137,21 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 ; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb.csv' ; Best fit results
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
-; SDSS Test Data set
-; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
-; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-
 ; Single SDSS Test spectrum that was poorly reduced
-out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
-out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
-class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_classes.csv' ; holds the top 8 classifications
-tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
+; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+; a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+; z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+; class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_classes.csv' ; holds the top 8 classifications
+; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
-; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
-; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-; a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-; z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
-; class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
-; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+; SDSS Test Data set
+out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
+out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
+tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -198,6 +196,9 @@ tfile_struct = replicate({t1:'', t2:'', t3:'', t4:'', t5:'', t6:'', t7:'', t8:''
 
 
 for ii=0, ncols-1 do begin
+print, '#####################################################'
+print, 'Processing Spectrum ', ii, ' out of ', n_spec
+print, '#####################################################'
 ; ii=444
 ; some unique identifier for the spec
 spec_id=ii
@@ -307,6 +308,7 @@ plot, ss1d.lambda, ss1d.spec
           width = 5*pspace
           nfind = 5
           npoly = npolyall            ; 3  *** Changed by Emil (was 0)
+          tclass = 'GALAXY'
 
           ; columns = Column numbers of the eigenspectra image to use in the
 ;                PCA fit; default to all columns.
@@ -323,7 +325,7 @@ fname='debug/zfind.dat' ; Debug file name
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
                          debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname, limitz=limitz)
+                         loglam=loglam, columns=columns, fname=fname, limitz=limitz, tclass=tclass, physcheck=physcheck)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -347,7 +349,7 @@ print, "************************************************************************
             res_gal = zrefind(ss1d, objflux, objivar, hdr=hdr, pwidth=15, $ ; look 15 pixels around each old peak for a better fit
                               pspace=pspace, width=3.*pspace, zold=resulti, $
                              loglam=loglam, plottitle=plottitle,  $
-                             doplot=doplot, debug=debug, columns=columns, fname=fname)
+                             doplot=doplot, debug=debug, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
 
 
 ; ; calculate the delta chi^2 values from minimum to minimum.
@@ -382,6 +384,7 @@ print, "************************************************************************
           zmax = 0.004          ; +1200 km/sec
           pspace = 1
           nfind = 2
+          tclass = 'CV'
 
 
 resulti_CV = zfind_CV(ss1d, /linear_lambda, eigenfile=eigenfile_CV, $
@@ -389,7 +392,7 @@ resulti_CV = zfind_CV(ss1d, /linear_lambda, eigenfile=eigenfile_CV, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
                          debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname)
+                         loglam=loglam, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -413,7 +416,7 @@ print, "************************************************************************
             res_CV = zrefind_CV(ss1d, objflux, objivar, hdr=hdr, pwidth=15, $ ; look 15 pixels around each old peak for a better fit
                               pspace=pspace, width=5.*pspace, zold=resulti_CV, $
                              loglam=loglam, plottitle=plottitle,  $
-                             doplot=doplot, debug=debug, columns=columns, fname=fname)
+                             doplot=doplot, debug=debug, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
 
 
 ; ; calculate the delta chi^2 values from minimum to minimum.
@@ -462,6 +465,7 @@ print, "************************************************************************
           zmax = 0.004          ; +1200 km/sec
           pspace = 1
           nfind = 1
+          tclass = 'STAR'
 ; check the system time.
           ts0 = systime(1)
             
@@ -471,7 +475,7 @@ print, "************************************************************************
                                 eigenfile=eigenfile_star,eigendir=eigendir, npoly=npoly, $
                                 zmin=zmin, zmax=zmax, pspace=1, $
                                 nfind=nfind, width=5*pspace, $
-                                doplot=0, debug=debug) ;doplot=doplot
+                                doplot=0, debug=debug, tclass=tclass, physcheck=physcheck) ;doplot=doplot
           
           res_star.class = 'STAR'
           res_star = res_star[sort(res_star.rchi2)] ;sort by rchi2 
@@ -483,6 +487,7 @@ print, "************************************************************************
 print, "******************************************************************************************************"
 print, "Zfind z values for galaxies and stars: ", result.z   ;  
 print, "Zfind chi^2 values for galaxies and stars ", result.rchi2 
+print, 'tcolumn[0] star: ', res_star.tcolumn[0]
 print, "******************************************************************************************************"
 print, "******************************************************************************************************" 
 
@@ -499,6 +504,7 @@ print, "************************************************************************
           pspace = 5
           nfind = 2             ;find best QSO candidate z
           plottitle = 'QSO Redshift'
+          tclass='AGN'
 
           
 
@@ -513,7 +519,7 @@ print, "************************************************************************
                       zmax = zmax, pspace = pspace, loglam = loglam, $
                       nfind = nfind, width = 5*pspace, objflux = objflux, $
                       objivar=objivar, plottitle = plottitle, $
-                       doplot = doplot, debug = debug)
+                       doplot = doplot, debug = debug, tclass=tclass, physcheck=physcheck)
 
 
           ; splog, 'CPU time to compute QSO redshifts = ', systime(1)-t0

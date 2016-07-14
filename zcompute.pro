@@ -90,7 +90,7 @@ end
 function zcompute, objflux, objivar, starflux, starmask, nfind=nfind, $
                    poffset=poffset, pspace=pspace, pmin=pmin, pmax=pmax, $
                    mindof=mindof, width=width, minsep=minsep, $
-                   plottitle=plottitle, doplot=doplot1, debug=debug, fname=fname
+                   plottitle=plottitle, doplot=doplot1, debug=debug, fname=fname, tclass=tclass, physcheck=physcheck
 
    if (NOT keyword_set(nfind)) then nfind = 1
    if (NOT keyword_set(pspace)) then pspace = 1 ; *Emil* pspace passed through _EXTRA
@@ -242,9 +242,57 @@ ENDIF ELSE BEGIN
 ; is this a physical solution or not??- either both positive, or one +
 ; ;                                       and the other modest in strength
 
-; ; print, "n_elements(acoeff) = ", n_elements(acoeff)
-; ; print, "acoeff = ", acoeff
-;       if n_elements(acoeff) eq 1 then begin
+; ** Emil adjustment to physarr check:
+; If star, don't apply the check
+; If CV, apply check only up to acoeff[2] (CV only has 3 eigenspectra)
+; If gal/AGN, apply up to acoeff[3]
+
+; print, "n_elements(acoeff) = ", n_elements(acoeff)
+; print, "acoeff = ", acoeff
+
+; ** EMIL's PHYSARR Check
+
+if physcheck then begin
+  if tclass eq 'STAR' then begin ;
+    ; print, 'TCLASS = STAR' 
+    if (acoeff[0] ge 0.) then physicalarr[ilag] = 1 $
+      else physicalarr[ilag] = 0
+  endif
+
+  if tclass eq 'CV' then begin
+    ; print, 'TCLASS = CV'
+    coeff_adjust = [acoeff[0],acoeff[1],acoeff[2]] 
+    coeffcopy = coeff_adjust(sort(coeff_adjust))
+    if (coeffcopy[0] GT 0.) OR $ ; i.e. all a_coeff are positive
+      ((coeffcopy[2] GT 0) AND (abs(coeffcopy[0]) lt 0.5*coeffcopy[2])) $ ; i.e. largest coeff is atleast 2x smallest coefficient
+    then begin 
+      physicalarr[ilag] = 1 
+    endif else begin 
+      if coeffcopy[2] GT 0 then physicalarr[ilag] = 0 $
+        else physicalarr[ilag] = -1 
+    endelse
+  endif
+
+  if (tclass eq 'AGN') OR (tclass eq 'GALAXY') then begin
+    ; print, 'TCLASS = AGN or GAL'
+    coeff_adjust = [acoeff[0],acoeff[1],acoeff[2],acoeff[3]] ; **** EMIL ADDED acoeff[3] &  all [3] below used to be [2]
+    coeffcopy = coeff_adjust(sort(coeff_adjust))
+    if (coeffcopy[0] GT 0.) OR $ 
+      ((coeffcopy[3] GT 0) AND (abs(coeffcopy[0]) lt 0.5*coeffcopy[3])) $
+    then begin 
+      physicalarr[ilag] = 1 
+    endif else begin 
+      if coeffcopy[3] GT 0 then physicalarr[ilag] = 0 $
+        else physicalarr[ilag] = -1 
+    endelse
+  endif
+endif
+
+
+
+; OLD PHYSARR Check
+
+;       if n_elements(acoeff) eq 1 then begin ; never the case (even for stars) when we have npoly
 ;           if (acoeff[0] ge 0.) then physicalarr[ilag] = 1 $
 ;           else physicalarr[ilag] = 0
 ;       endif else begin

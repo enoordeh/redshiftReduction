@@ -283,7 +283,7 @@ function find_nminima, yflux, xvec, dofarr=dofarr,nfind=nfind,minsep=minsep,$
 
 ;boost rchi2 for solutions which are unphysical
    if keyword_set(physicalarr) then ycopy = ycopy + $
-        max(ycopy)*(physicalarr lt 0) + max(ycopy)*(physicalarr le 0)
+        max(ycopy)*(physicalarr lt 0) + max(ycopy)*(physicalarr le 0) ; Thus when physicalarr = 0 there is 1x boost and when physarr= -1 there is 2x the boost
 
 ;   yderiv = [ycopy[1:ndata-1] - ycopy[0:ndata-2], 0]
    yderiv = deriv(ycopy)

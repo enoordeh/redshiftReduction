@@ -42,7 +42,7 @@
 ;   30-sep-02    hacked by MD for DEIMOS pipeline
 ;------------------------------------------------------------------------------
 function zrefind, ss1d, objflux, objivar, hdr=hdr, loglam=loglam, $
- pwidth=pwidth, pspace=pspace, width=width, zold=zold, doplot=doplot, fname=fname, $
+ pwidth=pwidth, pspace=pspace, width=width, zold=zold, doplot=doplot, fname=fname, tclass=tclass, physcheck=physcheck,$
       _EXTRA=EXTRA
 
   print, "******* ZREFIND *******"
@@ -123,14 +123,14 @@ function zrefind, ss1d, objflux, objivar, hdr=hdr, loglam=loglam, $
           eigenfile=result[i0].tfile, columns=result[i0].tcolumn[0:ncol-1], $
           npoly=result[i0].npoly, zguess=result[indx[jj]].z, loglam=loglam, $
           pwidth=pwidth, pspace=pspace, nfind=1, width=width, $
-           doplot=doplot*(jj eq 0), /nosubtract, fname=fname, _EXTRA=EXTRA) else $ 
+           doplot=doplot*(jj eq 0), /nosubtract, fname=fname, tclass=tclass, physcheck=physcheck, _EXTRA=EXTRA) else $ 
 ;slightly different version of zfind for qso spectra
 ;
          res1 = zfind_qso(ss1d, hdr=hdr,objflux=objflux, objivar=objivar, $
           eigenfile=result[i0].tfile, columns=result[i0].tcolumn[0:ncol-1], $
           npoly=result[i0].npoly, zguess=result[indx[jj]].z, loglam=loglam, $
           pwidth=pwidth, pspace=pspace, nfind=1, width=width, $
-           doplot=doplot*(jj eq 0), /nosubtract, _EXTRA=EXTRA)
+           doplot=doplot*(jj eq 0), /nosubtract, tclass=tclass, physcheck=physcheck, _EXTRA=EXTRA)
 
       ; Copy the results into the output structure
          ; print, "res1 redshift: ", res1[*].z

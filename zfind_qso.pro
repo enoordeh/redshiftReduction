@@ -94,7 +94,7 @@ function zfind_qso, ss1d, eigenfile=eigenfile, eigendir=eigendir, $
                 columns=columns, npoly=npoly, zmin=zmin, zmax=zmax, $
                 zguess=zguess, pwidth=pwidth, nfind=nfind, width=width, $
                 linear_lambda=linear_lambda,objflux=objflux, $
-                objivar=objivar, loglam=loglam, nosubtract=nosubtract, debug=debug,$
+                objivar=objivar, loglam=loglam, nosubtract=nosubtract, debug=debug, tclass=tclass, physcheck=physcheck, $
                 _EXTRA=EXTRA
 
    common com_zfind_qso, starflux, starloglam0, stardloglam, $
@@ -270,7 +270,7 @@ endif
 ;;; CALL zcompute.pro TO COMPUTE THE REDSHIFT(S).
    zans = zcompute(objflux, objivar, starflux, poffset=poffset, $
                   pmin=pmin, pmax=pmax, nfind=nfind, width=width, $
-                  plottitle=plottitle, debug=debug, _EXTRA=EXTRA)
+                  plottitle=plottitle, debug=debug, tclass=tclass, physcheck=physcheck,_EXTRA=EXTRA)
 
    ;----------
    ; Convert redshift (and error) from pixels to the conventional dimensionless

@@ -102,7 +102,7 @@ function zfind, ss1d, eigenfile=eigenfile, eigendir=eigendir, $
                 zguess=zguess, pwidth=pwidth, nfind=nfind, width=width, $
                 linear_lambda=linear_lambda,objflux=objflux, $
                 objivar=objivar, loglam=loglam, $
-                nosubtract=nosubtract, wvmin=wvmin, wvmax=wvmax, fname=fname, debug=debug, limitz=limitz, $
+                nosubtract=nosubtract, wvmin=wvmin, wvmax=wvmax, fname=fname, debug=debug, limitz=limitz, tclass=tclass, physcheck=physcheck, $
                 _EXTRA=EXTRA
 
   common com_zfind, starflux, starloglam0, stardloglam, $
@@ -317,7 +317,7 @@ endif
 ; print, "PMAX = ", pmax
    zans = zcompute(objflux, objivar, starflux, poffset=poffset, $
                   pmin=pmin, pmax=pmax, nfind=nfind, width=width, $
-                  plottitle=plottitle, fname=fname, debug=debug, _EXTRA=EXTRA)
+                  plottitle=plottitle, fname=fname, debug=debug, tclass=tclass, physcheck=physcheck, _EXTRA=EXTRA)
    ;----------
    ; Convert redshift (and error) from pixels to the conventional dimensionless
    ; value.  Do not modify any errors that are less than zero, since those
