@@ -252,7 +252,7 @@ ENDIF ELSE BEGIN
 
 ; ** EMIL's PHYSARR Check
 
-if physcheck then begin
+if physcheck eq 1 then begin
   if tclass eq 'STAR' then begin ;
     ; print, 'TCLASS = STAR' 
     if (acoeff[0] ge 0.) then physicalarr[ilag] = 1 $
@@ -288,6 +288,29 @@ if physcheck then begin
   endif
 endif
 
+if physcheck eq 2 then begin
+  if tclass eq 'STAR' then begin ;
+    ; print, 'TCLASS = STAR' 
+    if (acoeff[0] ge 0.) then physicalarr[ilag] = 1 $
+      else physicalarr[ilag] = 0
+  endif
+
+  if tclass eq 'CV' then begin
+    ; print, 'TCLASS = CV'
+    coeff_adjust = [acoeff[0],acoeff[1],acoeff[2]] 
+    coeffcopy = coeff_adjust(sort(abs(coeff_adjust)))
+    if coeffcopy[2] GT 0 then physicalarr[ilag] = 1 $
+      else physicalarr[ilag] = 0
+  endif
+
+  if (tclass eq 'AGN') OR (tclass eq 'GALAXY') then begin
+    ; print, 'TCLASS = AGN or GAL'
+    coeff_adjust = [acoeff[0],acoeff[1],acoeff[2],acoeff[3]] 
+    coeffcopy = coeff_adjust(sort(abs(coeff_adjust)))
+    if coeffcopy[3] GT 0 then physicalarr[ilag] = 1 $
+      else physicalarr[ilag] = 0
+  endif
+endif
 
 
 ; OLD PHYSARR Check

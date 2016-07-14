@@ -106,7 +106,7 @@ pro idl_wrapper
 
 
 debug=0
-physcheck=0 ; Check if linear combos are 'physical'?
+physcheck=2 ; Check if linear combos are 'physical'? (1 = full physcheck, 2 = light physcheck)
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 ; nosubtract = 1
 npolyall = 3 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
