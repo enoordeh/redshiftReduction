@@ -106,13 +106,15 @@ pro idl_wrapper
 
 
 debug=0
-physcheck=2 ; Check if linear combos are 'physical'? (1 = full physcheck, 2 = light physcheck)
+physcheck=0 ; Check if linear combos are 'physical'? (0= no, 1 = full physcheck, 2 = light physcheck)
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 ; nosubtract = 1
 npolyall = 3 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
-trim=0
-wvmin=500 ; Trim all input data to these wavelengths
-wvmax=9000
+trim=0 ; Trim data?
+wvmin=10^3.58 ; Trim all input data to these wavelengths
+wvmax=10^3.99
+print, "wvmin = ", wvmin
+print, "wvmax = ", wvmax
 padding = -10000 ; -10000 for SDSS, -100 for PC
 
 ; Input files
@@ -189,7 +191,7 @@ star_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, 
 CV_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 qso_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 a_struct = replicate({npoly:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
-result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:'', tfile:''}, n_spec)
+result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:'', tfile:'', istar:0.0}, n_spec)
 class_struct = replicate({c1:'', c2:'', c3:'', c4:'', c5:'', c6:'', c7:'', c8:''}, n_spec) ; Store top 8 classes
 z_struct = replicate({z1:0.0, z2:0.0, z3:0.0, z4:0.0, z5:0.0, z6:0.0, z7:0.0, z8:0.0}, n_spec) ; Store top 8 redshifts
 tfile_struct = replicate({t1:'', t2:'', t3:'', t4:'', t5:'', t6:'', t7:'', t8:''}, n_spec) ; Store eigentemplates of top 8 fits
@@ -221,7 +223,7 @@ wav = wav[WHERE(wav GT padding, /NULL)]
 if trim gt 0 then begin
 
 plot, wav, spec, color=FSC_color('white')
-pause
+; pause
 
   diff = abs(wav - wvmin)
   minval = min(diff,minsub)
@@ -236,7 +238,7 @@ pause
 
 
 oplot, wav, spec, color=FSC_color('red')
-pause
+; pause
 endif
 
 
@@ -482,12 +484,14 @@ print, "************************************************************************
           
           print, "res_star.z :", res_star.z
           result = [result, res_star[0:2]] ; Append result of top 3 star
+          istars = res_star.tcolumn[0]
 
 print, "******************************************************************************************************"
 print, "******************************************************************************************************"
 print, "Zfind z values for galaxies and stars: ", result.z   ;  
 print, "Zfind chi^2 values for galaxies and stars ", result.rchi2 
-print, 'tcolumn[0] star: ', res_star.tcolumn[0]
+print, 'istar : ', istars[0]
+; print, 'istar = ', res_star.istar[0:2]
 print, "******************************************************************************************************"
 print, "******************************************************************************************************" 
 
@@ -668,6 +672,7 @@ result_struct[ii].dof=result[0].dof
 result_struct[ii].z_err=result[0].z_err
 result_struct[ii].class=result[0].class ; or maybe you want name of eigentemplate or something?
 result_struct[ii].tfile = result[0].tfile
+result_struct[ii].istar = istars[0] ; Stores the (row# - 1) of best fit star template
 
 ; Also save the top 2 rchi^2 and respective redshifts for each class
 gal_struct[ii].z_1 = res_gal_sorted[0].z

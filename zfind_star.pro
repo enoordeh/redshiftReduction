@@ -255,6 +255,7 @@ common com_zfind_star, starflux_in, starloglam0, stardloglam, $
          result[indx].theta[0:ntheta-1] = reform(zans[indx].theta)
          result[indx].tfile = fileandpath(thisfile)
          result[indx].tcolumn[0] = istar ;get appropriate column from template
+         ; result[indx].istar = istar ;get appropriate column from template
          result.npoly = npoly
          result.class = 'STAR'
 ;        result.subclass = subclass[istar] ;type of sta
