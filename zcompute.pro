@@ -312,6 +312,15 @@ if physcheck eq 2 then begin
   endif
 endif
 
+if physcheck eq 3 then begin
+  if (acoeff[0] ge 0.) then begin
+    physicalarr[ilag] = 1 
+    
+  endif else begin
+    physicalarr[ilag] = 0
+    ; print, '********PHYSCHECK=3 ACOEFF0 < 0**************'
+  endelse
+endif
 
 ; OLD PHYSARR Check
 
