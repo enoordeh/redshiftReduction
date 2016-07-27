@@ -151,6 +151,9 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
 out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+a_out_AGN= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
+a_out_GAL= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
+a_out_STAR= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
 z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
 class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
 tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
@@ -191,6 +194,9 @@ star_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, 
 CV_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 qso_struct = replicate({z_1:0.0, rchi2_1:0.0, z_2:0.0, rchi2_2:0.0, class:''}, n_spec) ; Store the top 2 redshifts and their reduced chi^2 values
 a_struct = replicate({npoly:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
+a_struct_AGN = replicate({z:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
+a_struct_GAL = replicate({z:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
+a_struct_STAR = replicate({z:0.0, a1:0.0, a2:0.0, a3:0.0, a4:0.0, a5:0.0, a6:0.0, a7:0.0, a8:0.0}, n_spec)
 result_struct = replicate({z:0.0, rchi2:0.0, dof:0.0, z_err:0.0, class:'', tfile:'', istar:0.0}, n_spec)
 class_struct = replicate({c1:'', c2:'', c3:'', c4:'', c5:'', c6:'', c7:'', c8:''}, n_spec) ; Store top 8 classes
 z_struct = replicate({z1:0.0, z2:0.0, z3:0.0, z4:0.0, z5:0.0, z6:0.0, z7:0.0, z8:0.0}, n_spec) ; Store top 8 redshifts
@@ -539,6 +545,7 @@ print, "************************************************************************
 print, "Zfind QSO z values: ", res_qso.z   ; *** nothing changing?
 print, "Zfind QSO chi^2 values: ", res_qso.rchi2 ; *** Running zrefind gives same z values but increases chi2? why...?
 print, "Zfind QSO DoF values: ", res_qso.dof 
+print, "Zfind QSO theta ", res_qso.theta
 print, "******************************************************************************************************"
 print, "******************************************************************************************************"
 
@@ -705,6 +712,36 @@ a_struct[ii].a6 = result[0].theta[5]
 a_struct[ii].a7 = result[0].theta[6]
 a_struct[ii].a8 = result[0].theta[7]
 
+a_struct_AGN[ii].z = res_qso_sorted[0].z
+a_struct_AGN[ii].a1 = res_qso_sorted[0].theta[0]
+a_struct_AGN[ii].a2 = res_qso_sorted[0].theta[1]
+a_struct_AGN[ii].a3 = res_qso_sorted[0].theta[2]
+a_struct_AGN[ii].a4 = res_qso_sorted[0].theta[3]
+a_struct_AGN[ii].a5 = res_qso_sorted[0].theta[4]
+a_struct_AGN[ii].a6 = res_qso_sorted[0].theta[5]
+a_struct_AGN[ii].a7 = res_qso_sorted[0].theta[6]
+a_struct_AGN[ii].a8 = res_qso_sorted[0].theta[7]
+
+a_struct_GAL[ii].z = res_gal_sorted[0].z
+a_struct_GAL[ii].a1 = res_gal_sorted[0].theta[0]
+a_struct_GAL[ii].a2 = res_gal_sorted[0].theta[1]
+a_struct_GAL[ii].a3 = res_gal_sorted[0].theta[2]
+a_struct_GAL[ii].a4 = res_gal_sorted[0].theta[3]
+a_struct_GAL[ii].a5 = res_gal_sorted[0].theta[4]
+a_struct_GAL[ii].a6 = res_gal_sorted[0].theta[5]
+a_struct_GAL[ii].a7 = res_gal_sorted[0].theta[6]
+a_struct_GAL[ii].a8 = res_gal_sorted[0].theta[7]
+
+a_struct_STAR[ii].z = res_star_sorted[0].z
+a_struct_STAR[ii].a1 = res_star_sorted[0].theta[0]
+a_struct_STAR[ii].a2 = res_star_sorted[0].theta[1]
+a_struct_STAR[ii].a3 = res_star_sorted[0].theta[2]
+a_struct_STAR[ii].a4 = res_star_sorted[0].theta[3]
+a_struct_STAR[ii].a5 = res_star_sorted[0].theta[4]
+a_struct_STAR[ii].a6 = res_star_sorted[0].theta[5]
+a_struct_STAR[ii].a7 = res_star_sorted[0].theta[6]
+a_struct_STAR[ii].a8 = res_star_sorted[0].theta[7]
+
 class_struct[ii].c1 = result[0].class
 class_struct[ii].c2 = result[1].class
 class_struct[ii].c3 = result[2].class
@@ -758,6 +795,9 @@ WRITE_CSV, out_db, result_struct
 ; WRITE_CSV, out_db, result_struct.z, result_struct.rchi2, result_struct.dof, result_struct.z_err, result_struct.class
 WRITE_CSV, out_db2, gal_struct.rchi2_1, gal_struct.rchi2_2, star_struct.rchi2_1, star_struct.rchi2_2, qso_struct.rchi2_1, qso_struct.rchi2_2, CV_struct.rchi2_1, CV_struct.rchi2_2
 WRITE_CSV, a_out, a_struct
+WRITE_CSV, a_out_AGN, a_struct_AGN
+WRITE_CSV, a_out_GAL, a_struct_GAL
+WRITE_CSV, a_out_STAR, a_struct_STAR
 WRITE_CSV, z_out, z_struct
 WRITE_CSV, class_out, class_struct
 WRITE_CSV, tfile_out, tfile_struct

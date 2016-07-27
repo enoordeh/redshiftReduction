@@ -288,6 +288,10 @@ function find_nminima, yflux, xvec, dofarr=dofarr,nfind=nfind,minsep=minsep,$
 ;   yderiv = [ycopy[1:ndata-1] - ycopy[0:ndata-2], 0]
    yderiv = deriv(ycopy)
    ydone = max(ycopy)
+   ; print, 'physicalarr'
+   ; print, physicalarr
+   ; print, 'ycopy:'
+   ; print, ycopy
 
    ;----------
    ; Set up for plots
