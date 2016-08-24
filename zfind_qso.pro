@@ -170,7 +170,8 @@ if (keyword_set(debug)) then begin
   print, "************ PLOTTING CONTINUUM SUBTRACTED TEMPLATE SPECTRUM [1st PC] ************"
   lengthtest=n_elements(starflux_corrected[*,0])
   xaxistest=indgen(lengthtest)
-  cgoplot, xaxistest, starflux_corrected[*,0], color=FSC_color('green')
+  cgplot, xaxistest, starflux_corrected[*,0], color=FSC_color('green'), XTicklen=1.0, YTicklen=1.0, AxisColor='white', yrange=[-1e4,1e4], $
+      YTitle = textoidl('Objflux'), XTitle = 'Arbitrary Units'
   pause
 endif
 

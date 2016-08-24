@@ -370,7 +370,7 @@ ENDELSE
 if (keyword_set(doplot)) then begin
 print, "************ PLOTTING PRE-SMOOTHING CHI2ARR/DOF vs LAG ************"
 cgplot, lags, chi2arr/dofarr, color=FSC_color('green'), XTicklen=1.0, YTicklen=1.0, AxisColor='white',$
-    YTitle = textoidl('\chi^2/DOF'), XTitle = 'Lag'
+    YTitle = textoidl('\chi^2/DOF'), XTitle = 'Lag', yrange=[0,5], xrange=[5050,9450]
 pause
 
 ; print, "***********MINCHI2/DOF***********:", min(chi2arr/dofarr)
@@ -399,8 +399,9 @@ if (keyword_set(doplot)) then begin
     ; print, "chi2arr", chi2arr
     print, "min chi2arr/dof: ", min(chi2arr/dof)
     print, "index of minchi2arr/dof: ", where(chi2arr/dof EQ min(chi2arr/dof))
-    print, "************ PLOTTING POST-SMOOTHING CHI2ARR/DOF vs LAG ************"
+    print, "************ PLOTTING POST-SMOOTHING CHI2ARR/DOF vs LAG  ************"
      cgoplot, lags, chi2arr/dofarr, color=FSC_color('red')
+    print, "post smoothing min chi2arr/dof: ", min(chi2arr/dof)
      pause
     ; oplot, xaxistest, dofarr, color=FSC_color('green')
     ; wait, 2
@@ -414,6 +415,8 @@ endif
    ; print, "mindof: ", mindof
    ; print, "indx: ", indx
    ; print, "width: ", width
+   ; print, "ct = ", ct
+   ; print, 'width = ', width
    if (ct GT width) then begin
 ;      xpeak1 = find_npeaks(-chi2arr[indx]/dofarr[indx], lags[indx], $
 ;       nfind=nfind, minsep=minsep, width=width, $
@@ -421,6 +424,7 @@ endif
 ;      zans[0:npeak-1].chi2 = -ypeak1
       ; print, "lags[indx] ", lags[indx]
       ; print, [Transpose(lags[indx]),Transpose(chi2arr[indx]/dofarr[indx])]
+      ; print, chi2arr[indx]
       xpeak1 = find_nminima(chi2arr[indx], lags[indx], $ 
        dofarr=dofarr[indx], nfind=nfind, minsep=minsep, width=width, $
        ypeak=ypeak1, xerr=xerr1, npeak=npeak, errcode=errcode, $;/flatnoise, $
@@ -430,6 +434,7 @@ endif
       zans[0:npeak-1].z = poffset - xpeak1
       ; Set Z_ERR equal to the error-code if it is non-zero
       zans[0:npeak-1].z_err = xerr1 * (errcode EQ 0) + errcode
+      ; print, "ypeak1 = ", ypeak1 ; *** Emil This is where negative chi^2 is coming from
       zans[0:npeak-1].chi2 = ypeak1
       for ipeak=0L, npeak-1 do begin
          junk = min(abs(lags-xpeak1[ipeak]), ilag)

@@ -106,10 +106,13 @@ pro idl_wrapper
 
 
 debug=0
+debug_gal = 0
+debug_star = 0
+debug_qso = 0
 physcheck=0 ; Check if linear combos are 'physical'? (0= no, 1 = full physcheck, 2 = light physcheck)
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
-; nosubtract = 1
-npolyall = 3 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
+nosubtract = 0
+npolyall = 0 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
 trim=0 ; Trim data?
 wvmin=10^3.58 ; Trim all input data to these wavelengths
 wvmax=10^3.99
@@ -123,9 +126,14 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 ; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/eigentest/wavelengths.csv'
 
 ; SDSS Test Data Set
-spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
-ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
-wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
+; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
+
+ex='ex_ncr4_noneg_npoly0'
+spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objflux.csv'
+ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objivar.csv'
+wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/wavelengths.csv'
 
 ; Single SDSS Test spectrum that was poorly reduced
 ; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
@@ -134,10 +142,6 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 
 
 ; output database name
-
-; PC Test Data Set
-; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb.csv' ; Best fit results
-; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
 
 ; Single SDSS Test spectrum that was poorly reduced
 ; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
@@ -148,15 +152,15 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 ; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ; SDSS Test Data set
-out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb.csv' ; Best fit results
-out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-a_out_AGN= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
-a_out_GAL= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
-a_out_STAR= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
-z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
-class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/classes.csv' ; holds the top 8 classifications
-tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb.csv' ; Best fit results
+out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+a_out_AGN= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
+a_out_GAL= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
+a_out_STAR= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
+z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/classes.csv' ; holds the top 8 classifications
+tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -332,8 +336,8 @@ fname='debug/zfind.dat' ; Debug file name
                          eigendir=eigendir, npoly=npoly, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
-                         debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname, limitz=limitz, tclass=tclass, physcheck=physcheck)
+                         debug=debug_gal, objflux=objflux, objivar=objivar, $
+                         loglam=loglam, columns=columns, fname=fname, limitz=limitz, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -357,11 +361,11 @@ print, "************************************************************************
             res_gal = zrefind(ss1d, objflux, objivar, hdr=hdr, pwidth=15, $ ; look 15 pixels around each old peak for a better fit
                               pspace=pspace, width=3.*pspace, zold=resulti, $
                              loglam=loglam, plottitle=plottitle,  $
-                             doplot=doplot, debug=debug, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
+                             doplot=doplot, debug=debug_gal, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
 
 
 ; ; calculate the delta chi^2 values from minimum to minimum.
-          res_gal.class = 'GALAXY' ; *** This is just setting the class to galaxy? what? b/c this rerun is only for eigenfile_gal
+          res_gal.class = 'GALAXY' 
            res_gal.subclass = ' '
            result = res_gal
            ; delta_chisqr = (result[1].rchi2-result[0].rchi2)*.5* $
@@ -399,8 +403,8 @@ resulti_CV = zfind_CV(ss1d, /linear_lambda, eigenfile=eigenfile_CV, $
                          eigendir=eigendir, npoly=npoly, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
-                         debug=debug, objflux=objflux, objivar=objivar, $
-                         loglam=loglam, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
+                         debug=debug_star, objflux=objflux, objivar=objivar, $
+                         loglam=loglam, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
 print, "******************************************************************************************************"
@@ -424,7 +428,7 @@ print, "************************************************************************
             res_CV = zrefind_CV(ss1d, objflux, objivar, hdr=hdr, pwidth=15, $ ; look 15 pixels around each old peak for a better fit
                               pspace=pspace, width=5.*pspace, zold=resulti_CV, $
                              loglam=loglam, plottitle=plottitle,  $
-                             doplot=doplot, debug=debug, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck)
+                             doplot=doplot, debug=debug_star, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
 
 
 ; ; calculate the delta chi^2 values from minimum to minimum.
@@ -483,7 +487,7 @@ print, "************************************************************************
                                 eigenfile=eigenfile_star,eigendir=eigendir, npoly=npoly, $
                                 zmin=zmin, zmax=zmax, pspace=1, $
                                 nfind=nfind, width=5*pspace, $
-                                doplot=0, debug=debug, tclass=tclass, physcheck=physcheck) ;doplot=doplot
+                                doplot=0, debug=debug_star, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract) ;doplot=doplot
           
           res_star.class = 'STAR'
           res_star = res_star[sort(res_star.rchi2)] ;sort by rchi2 
@@ -527,9 +531,9 @@ print, "************************************************************************
           res_qso =  zfind_qso(ss1d, /linear_lambda, $
                       eigenfile = eigenfile_qso, eigendir=eigendir, npoly = npoly, zmin = zmin, $
                       zmax = zmax, pspace = pspace, loglam = loglam, $
-                      nfind = nfind, width = 5*pspace, objflux = objflux, $
+                      nfind = nfind, width = 25, objflux = objflux, $ ; width changed from 5*pspace to 25
                       objivar=objivar, plottitle = plottitle, $
-                       doplot = doplot, debug = debug, tclass=tclass, physcheck=physcheck)
+                       doplot = doplot, debug = debug_qso, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
 
 
           ; splog, 'CPU time to compute QSO redshifts = ', systime(1)-t0
