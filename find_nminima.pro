@@ -91,11 +91,16 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
       junk = min(ydof, imin)
       xguess = xarr[imin]
       ypeak = ydof[imin]
+      ; print, "xguess = ", xguess
+      ; print, "ypeak = ", ypeak
    endif else begin
       junk = min(abs(xarr - xguess), imin)
       ypeak = ydof[imin]
+      ; print, "Initial xguess = ", xguess
+      ; print, "Initial ypeak = ", ypeak
    endelse
 
+   if (keyword_set(xplotfit)) then print, "xplotfit = ", xplotfit
    ; Set default return values
    errcode = 0L
    xerr1 = 0.0
@@ -137,19 +142,23 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
    endif
 
    ;----------
-   ; Case of more than 3 points: Gaussian fit
+   ; Case of more than 3 points: Gaussian fit ; *** Emil - This fit is sometimes resulting in negative chi2 values...
 
-   if (nthis GT 3 AND errcode EQ 0) then begin
-
+   if (nthis GT 3 AND errcode EQ 0) then begin 
+      ; print, "gaussian fit"
       nterms = 4
       yfit = mpfitpeak(thisx-xguess, thisy, coeff, nterms=nterms, $
        /gaussian, /negative, perror=perror)
+      ; print, "yfit = ", yfit
+      ; print, "thix = ", thisx
+      ; print, "thisx - xguess", thisx-xguess
+      cgoplot, thisx, yfit, color=FSC_color('blue')
       if (nthis LE nterms) then $
        yerror = 0 $
       else $
        yerror = sqrt(total( (thisy-yfit)^2 / (nthis - nterms) ))
 
-      ; Compute the fit error of the minimum of the quadratic.
+      ; Compute the fit error of the minimum of the quadratic. 
       ; We rescale by the apparent errors in Y.
 ; check that perror is actually set. sometimes the mpfit routine can
 ; return without having defined perror. 
@@ -166,16 +175,19 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
       if (coeff[0] LT -1.) then begin
          xerr2 = coeff[2] * sqrt(2. * alog(coeff[0]/(coeff[0]+1.)))
       endif else begin
-         errcode = -5L
+         errcode = -5L ; *** Emil - err code for a peak instead of a dip
       endelse
 
       xbest = coeff[1] + xguess
-      ybest = coeff[0]
+      ybest = coeff[0] ; *** Emil - let coeff be A then gaussian is A[0]*exp(-0.5*u^2)+A[3]+A[4]x where u = (x-A[1])/A[2]
+      ; i.e. we set ybest to the peak value
+      ; print, "initial ybest ", ybest
       ; print, "xguess", xguess
       ; print, "xbest", xbest
       
       for ic=3, nterms-1 do $
-       ybest = ybest + coeff[ic] * coeff[1]^(ic-3)
+       ybest = ybest + coeff[ic] * coeff[1]^(ic-3) ; *** Emil - add on additional polynomial terms
+      ; print, "ybest after poly terms ", ybest
       ybest = ybest / meandof
 
       ; print, "ybest", ybest
@@ -186,6 +198,12 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
          errcode = -4L
       endif
 
+      ; *** Added by Emil
+      if (ybest LT 0) then begin
+         print, "Best fit peak is negative"
+         errcode = -7L
+      endif
+
       if (keyword_set(doplot)) then $
        yplotfit = mpfitpeak_gauss(xplotfit - xguess, coeff) / meandof
 
@@ -193,7 +211,7 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
    ; Case of exactly 3 points: Quadractic fit
 
    endif else if (nthis EQ 3 AND errcode EQ 0) then begin
-
+      ; print, "quadratic fit"
       ndegree = 3
       coeff = svdfit(thisx-xguess, thisy, ndegree, $
        yfit=yfit, covar=covar, sigma=corrsig, /double)
@@ -214,11 +232,17 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
       ; Compute where chi^2 increases by 1
       xerr2 = 1 / sqrt(coeff[2])
 
-      ybest = poly(xbest-xguess, coeff) / meandof
+      ybest = poly(xbest-xguess, coeff) / meandof ; *** Evaluates a polynomial of c0 + c1(xbest-xguess) + c2(xbest-xguess)^2 + ...
 
       ; Insist that XBEST is a minimum (not a maximum)
       if (coeff[2] LT 0) then begin
          errcode = -3L
+      endif
+
+      ; *** Added by Emil
+      if (ybest LT 0) then begin
+         print, "Best fit peak is negative"
+         errcode = -7L
       endif
 
       if (keyword_set(doplot)) then begin
@@ -240,6 +264,7 @@ function zfitmin, yarr, xarr, dofarr=dofarr, $
    endif
 
    if (errcode EQ 0) then begin
+      ; print, "zfitmin ybest = ", ybest
       ypeak = ybest
    endif else begin
       xbest = xguess
@@ -336,17 +361,27 @@ function find_nminima, yflux, xvec, dofarr=dofarr,nfind=nfind,minsep=minsep,$
       ; Centroid on this peak (local minimum)
 
       if (keyword_set(doplot)) then xplotfit = 1
+
+      ; if (keyword_set(doplot)) then begin
+      ;      print, "************ PLOTTING YFLUX vs XVEC ************"
+      ;      cgplot, xvec, yflux, color=FSC_color('green'), XTicklen=1.0, YTicklen=1.0, AxisColor='white', $
+      ;          YTitle = textoidl('chi2'), XTitle = 'lag'
+      ;      pause
+      ; endif
+
       xpeak1 = zfitmin(yflux, xvec, dofarr=dofarr, xguess=xvec[imin], $
        width=width, xerr=xerr1, ypeak=ypeak1, errcode=errcode1, $
        xplotfit=xplotfit, yplotfit=yplotfit, $
        xplotval=xplotval, yplotval=yplotval)
+
+      ; print, "zfitmin ypeak1 = ", ypeak1
 
       ;----------
       ; Save return values
 
       if (npeak EQ 0) then begin
          ; Always retain the first peak
-         xpeak = xpeak1
+         xpeak = xpeak1 
          xerr = xerr1
          errcode = errcode1
          ypeak = ypeak1
