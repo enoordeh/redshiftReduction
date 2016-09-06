@@ -109,10 +109,11 @@ debug=0
 debug_gal = 0
 debug_star = 0
 debug_qso = 0
+pspace_qso = 1   ; Normally run with 5. pspace_qso bug fixed now, can run at 1 (See XAGN doc for details)
 physcheck=0 ; Check if linear combos are 'physical'? (0= no, 1 = full physcheck, 2 = light physcheck)
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 nosubtract = 0
-npolyall = 0 ; Add an (npolyall - 1)th order polynomial to the template fitting procedure
+npolyall = 0 ; Add an (npolya ll - 1)th order polynomial to the template fitting procedure ; *** This appears to be causing issues with computechi2 (details in XAGN doc)
 trim=0 ; Trim data?
 wvmin=10^3.58 ; Trim all input data to these wavelengths
 wvmax=10^3.99
@@ -130,7 +131,14 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 ; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/objivar.csv'
 ; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/wavelengths.csv'
 
-ex='ex_ncr4_noneg_npoly0'
+; ex='noneg_npoly0/run2/ex4'
+
+; exs=['noneg_npoly0/run2/Telluric_Mask/ex5','noneg_npoly0/run2/Telluric_Mask/ex6','noneg_npoly0/run2/Telluric_Mask/ex7','noneg_npoly0/run2/Telluric_Mask/ex8','noneg_npoly0/run2/Telluric_Mask/ex9']
+ 
+exs = 'noneg_npoly0/ex4_pspace_qso_1_fixed'
+for i=0,N_ELEMENTS(exs) do begin
+ex=exs[i]
+print, 'CURRENT EX: ', ex
 spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objflux.csv'
 ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objivar.csv'
 wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/wavelengths.csv'
@@ -515,7 +523,7 @@ print, "************************************************************************
           zmin = 0.0033         ; +1000 km/sec
 ;          zmax = max(ss1d.lambda)/1215. -1  ; Max range we can expect to see
           zmax = 5.
-          pspace = 5
+          pspace = pspace_qso
           nfind = 2             ;find best QSO candidate z
           plottitle = 'QSO Redshift'
           tclass='AGN'
@@ -805,7 +813,8 @@ WRITE_CSV, a_out_STAR, a_struct_STAR
 WRITE_CSV, z_out, z_struct
 WRITE_CSV, class_out, class_struct
 WRITE_CSV, tfile_out, tfile_struct
-end
 
+endfor
+end
 
  

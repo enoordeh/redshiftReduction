@@ -236,7 +236,6 @@ ENDIF ELSE BEGIN
 ;
 
 
-
 ; *** "physical solution" check below commented out by Emil
 
 ; is this a physical solution or not??- either both positive, or one +
@@ -370,18 +369,18 @@ ENDELSE
 if (keyword_set(doplot)) then begin
 print, "************ PLOTTING PRE-SMOOTHING CHI2ARR/DOF vs LAG ************"
 cgplot, lags, chi2arr/dofarr, color=FSC_color('green'), XTicklen=1.0, YTicklen=1.0, AxisColor='white',$
-    YTitle = textoidl('\chi^2/DOF'), XTitle = 'Lag', yrange=[0,5], xrange=[5050,9450]
+    YTitle = textoidl('\chi^2/DOF'), XTitle = 'Lag', xrange=[5050,9450]
 pause
 
 ; print, "***********MINCHI2/DOF***********:", min(chi2arr/dofarr)
 ; print, debugarr
-  print, "nlag"
-  print, nlag
+  ; print, "nlag"
+  ; print, nlag
 endif
 
    if nlag gt 1000 then begin ;remove long range trends
       medchi2 = median(chi2arr)
-      diffchi2arr =  djs_median(chi2arr,  width= 200,  boundary='reflect')
+      diffchi2arr =  djs_median(chi2arr,  width= 200*5/pspace,  boundary='reflect') ; *** Emil changed width from 200 to 200*5/pspace so the width in redshift is independent of pspace
       chi2arr = chi2arr-diffchi2arr + medchi2 ;redefine chisqr array
       print, "chi2arr smoothed - long trends removed"
    endif
