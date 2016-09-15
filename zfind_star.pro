@@ -93,7 +93,7 @@
 function zfind_star, ss1d, eigenfile=eigenfile, eigendir=eigendir, $
                 npoly=npoly, zmin=zmin, zmax=zmax, $
                 zguess=zguess, pwidth=pwidth, nfind=nfind, width=width, $
-                linear_lambda=linear_lambda,objflux=objflux, $
+                linear_lambda=linear_lambda,objflux=objflux, cont_sub_width=cont_sub_width, $
                 objivar=objivar, loglam=loglam, subclass=subclass, debug=debug, tclass=tclass, physcheck=physcheck,$
                 _EXTRA=EXTRA
 
@@ -142,7 +142,7 @@ common com_zfind_star, starflux_in, starloglam0, stardloglam, $
         pause
       endif
 
-      starcont = djs_median(starflux_in[*, i], width=1000, boundary='reflect') ; *** EMIL changed width from 2500 to 500
+      starcont = djs_median(starflux_in[*, i], width=cont_sub_width, boundary='reflect') ; *** EMIL changed width from 2500 to 500
       starflux[*, i] =  starflux_in[*, i] - float(starcont)
 
       if (keyword_set(debug)) then begin
@@ -169,7 +169,7 @@ common com_zfind_star, starflux_in, starloglam0, stardloglam, $
 ;  print, ' log lam range: ', loglam[0], loglam[n_elements(loglam)-1]
 
 ;remove continuum same as for templates
-  objcont = djs_median(objflux, width=1000, boundary='reflect') ; *** EMIL changed width from 2500 to 500
+  objcont = djs_median(objflux, width=cont_sub_width, boundary='reflect') ; *** EMIL changed width from 2500 to 500
   objflux = objflux - float(objcont)
 
 

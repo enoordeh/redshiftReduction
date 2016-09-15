@@ -114,6 +114,7 @@ physcheck=0 ; Check if linear combos are 'physical'? (0= no, 1 = full physcheck,
 limitz=1 ; Apply secondary limitation on maximum redshift for each template fit to force spectrum to always be fully within the template bounds
 nosubtract = 0
 npolyall = 0 ; Add an (npolya ll - 1)th order polynomial to the template fitting procedure ; *** This appears to be causing issues with computechi2 (details in XAGN doc)
+cont_sub_width = 200
 trim=0 ; Trim data?
 wvmin=10^3.58 ; Trim all input data to these wavelengths
 wvmax=10^3.99
@@ -135,13 +136,28 @@ padding = -10000 ; -10000 for SDSS, -100 for PC
 
 ; exs=['noneg_npoly0/run2/Telluric_Mask/ex5','noneg_npoly0/run2/Telluric_Mask/ex6','noneg_npoly0/run2/Telluric_Mask/ex7','noneg_npoly0/run2/Telluric_Mask/ex8','noneg_npoly0/run2/Telluric_Mask/ex9']
  
-exs = 'noneg_npoly0/ex4_pspace_qso_1_fixed'
-for i=0,N_ELEMENTS(exs) do begin
+; exs = 'noneg_npoly0/ex4_pspace_qso_1_fixed'
+; exs = '090A0958B'
+; exs = ['090A0958B','092A0405A','094A0557A']
+exs = 'all_formatted'
+for i=0,N_ELEMENTS(exs)-1 do begin
 ex=exs[i]
-print, 'CURRENT EX: ', ex
-spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objflux.csv'
-ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objivar.csv'
-wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/wavelengths.csv'
+print, 'CURRENT folder: ', ex
+
+; VIMOS SPECTRA
+; spec_file='/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/wavelengths.csv'
+
+; ALL VIMOS SPECTRA
+spec_file='/scratch/emiln/VIMOS_AGN/'+ex+'/objflux.csv'
+ivar_file='/scratch/emiln/VIMOS_AGN/'+ex+'/objivar.csv'
+wav_file='/scratch/emiln/VIMOS_AGN/'+ex+'/wavelengths.csv'
+
+; SDSS NON STACKED SPECTRA
+; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objflux.csv'
+; ivar_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/objivar.csv'
+; wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/wavelengths.csv'
 
 ; Single SDSS Test spectrum that was poorly reduced
 ; spec_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_objflux.csv'
@@ -151,6 +167,31 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 
 ; output database name
 
+
+; VIMOS OUTPUTS
+out_db='/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/outdb.csv' ; Best fit results
+out_db2='/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+a_out= '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+a_out_AGN= '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
+a_out_GAL= '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
+a_out_STAR= '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
+z_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+class_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/classes.csv' ; holds the top 8 classifications
+tfile_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/cont_width_500/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+
+
+; VIMOS OUTPUTS
+; out_db='/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/outdb.csv' ; Best fit results
+; out_db2='/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+; a_out= '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+; a_out_AGN= '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
+; a_out_GAL= '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
+; a_out_STAR= '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
+; z_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+; class_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/classes.csv' ; holds the top 8 classifications
+; tfile_out = '/scratch/emiln/VIMOS_AGN/'+ex+'/reflex_end_products/all_reductions/formatted/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+
+
 ; Single SDSS Test spectrum that was poorly reduced
 ; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb.csv' ; Best fit results
 ; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_outdb2.csv' ; Holds smallest 2 rchi^2 for each class
@@ -159,16 +200,16 @@ wav_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdatase
 ; class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_classes.csv' ; holds the top 8 classifications
 ; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/bad_tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
-; SDSS Test Data set
-out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb.csv' ; Best fit results
-out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
-a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
-a_out_AGN= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
-a_out_GAL= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
-a_out_STAR= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
-z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
-class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/classes.csv' ; holds the top 8 classifications
-tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
+; SDSS Test Data set outputs
+; out_db='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb.csv' ; Best fit results
+; out_db2='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/outdb2.csv' ; Holds smallest 2 rchi^2 for each class
+; a_out= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff.csv' ; Holds the best fit [npolyall, a_coeff] including polynomial terms
+; a_out_AGN= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_AGN.csv' ; Holds the best fit AGN [npolyall, a_coeff]
+; a_out_GAL= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_GAL.csv' ; Holds the best fit GAL [npolyall, a_coeff]
+; a_out_STAR= '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/a_coeff_STAR.csv' ; Holds the best fit STAR [npolyall, a_coeff]
+; z_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/z.csv' ; holds the top 8 redshifts corresopnding to top 8 classifications below
+; class_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/classes.csv' ; holds the top 8 classifications
+; tfile_out = '/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/testdataset/SDSS_TEST_DATA/NotStacked/'+ex+'/tfile.csv' ; holds the eigentemplates associated with top 8 classifications
 
 ;mask_file='/scratch/emiln/VIMOS_AGN/090A0958B/reflex_end_products/test/mask.csv'
 ; readcol, spec_file, spec, format='F'
@@ -344,7 +385,7 @@ fname='debug/zfind.dat' ; Debug file name
                          eigendir=eigendir, npoly=npoly, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
-                         debug=debug_gal, objflux=objflux, objivar=objivar, $
+                         debug=debug_gal, objflux=objflux, objivar=objivar, cont_sub_width=cont_sub_width, $
                          loglam=loglam, columns=columns, fname=fname, limitz=limitz, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
@@ -411,7 +452,7 @@ resulti_CV = zfind_CV(ss1d, /linear_lambda, eigenfile=eigenfile_CV, $
                          eigendir=eigendir, npoly=npoly, $
                          zmin=zmin, zmax=zmax, nfind=nfind, pspace=pspace, $
                          width=width, plottitle=plottitle, doplot=doplot, $
-                         debug=debug_star, objflux=objflux, objivar=objivar, $
+                         debug=debug_star, objflux=objflux, objivar=objivar, cont_sub_width=cont_sub_width, $
                          loglam=loglam, columns=columns, fname=fname, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
           ; fname=fname, wvmin=wvmin, wvmax=wvmax)
 
@@ -494,7 +535,7 @@ print, "************************************************************************
           res_star = zfind_star(ss1d, /linear_lambda, $
                                 eigenfile=eigenfile_star,eigendir=eigendir, npoly=npoly, $
                                 zmin=zmin, zmax=zmax, pspace=1, $
-                                nfind=nfind, width=5*pspace, $
+                                nfind=nfind, width=5*pspace, cont_sub_width=cont_sub_width, $
                                 doplot=0, debug=debug_star, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract) ;doplot=doplot
           
           res_star.class = 'STAR'
@@ -540,7 +581,7 @@ print, "************************************************************************
                       eigenfile = eigenfile_qso, eigendir=eigendir, npoly = npoly, zmin = zmin, $
                       zmax = zmax, pspace = pspace, loglam = loglam, $
                       nfind = nfind, width = 25, objflux = objflux, $ ; width changed from 5*pspace to 25
-                      objivar=objivar, plottitle = plottitle, $
+                      objivar=objivar, plottitle = plottitle, cont_sub_width=cont_sub_width, $
                        doplot = doplot, debug = debug_qso, tclass=tclass, physcheck=physcheck, nosubtract=nosubtract)
 
 

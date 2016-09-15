@@ -93,7 +93,7 @@
 function zfind_qso, ss1d, eigenfile=eigenfile, eigendir=eigendir, $
                 columns=columns, npoly=npoly, zmin=zmin, zmax=zmax, $
                 zguess=zguess, pwidth=pwidth, nfind=nfind, width=width, $
-                linear_lambda=linear_lambda,objflux=objflux, $
+                linear_lambda=linear_lambda,objflux=objflux, cont_sub_width=cont_sub_width, $
                 objivar=objivar, loglam=loglam, nosubtract=nosubtract, debug=debug, tclass=tclass, physcheck=physcheck, $
                 _EXTRA=EXTRA
 
@@ -157,7 +157,7 @@ endif
 ;       starparams = svdfit(starloglam, starflux[*, i], starorder, $
 ;          /double,  /legendre,  yfit=starcont)
         if i eq 1 then continue ; skip the emission line template.
-        starcont = djs_median(starflux[*, i], width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+        starcont = djs_median(starflux[*, i], width=cont_sub_width, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
         starflux[*, i] = starflux[*, i] - float(starcont)
 
       endfor
@@ -216,7 +216,7 @@ endif
 ;  objparams = svdfit(loglam, objflux, objorder, /legendre, $
 ;       /double, yfit=objcont)
   if nosubtract eq 0 then begin
-      objcont = djs_median(objflux, width=1000, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
+      objcont = djs_median(objflux, width=cont_sub_width, boundary='reflect') ;*** EMIL CHANGED THIS from 2500 to 500
       objflux = objflux - float(objcont)
   endif
 
