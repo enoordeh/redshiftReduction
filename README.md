@@ -1,6 +1,6 @@
 ### Redshift Reduction
 
-This is a suite of codes written in IDL and Python that have been used to determine redshifts and optical classifications for ~3000 spectra taking with the VIMOS instrument on the VLT.
+This is a suite of codes written in IDL and Python that have been used to determine redshifts and optical classifications for ~3000 spectra taken with the VIMOS instrument on the VLT.
 
 The bulk of the IDL code that handles the redshift determination comes from [DEIMOS](https://github.com/MCTwo/DEIMOS) and has been optimized for VIMOS spectra.
 
